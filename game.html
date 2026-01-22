@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Guessing Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #282c34;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .game-container {
+            background-color: #3b404e;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-align: center;
+            width: 300px;
+        }
+        h1 { font-size: 24px; margin-bottom: 20px; }
+        p { margin-bottom: 15px; }
+        
+        input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 70%;
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #61dafb;
+            border: none;
+            border-radius: 5px;
+            color: #282c34;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #21a1f1; }
+        
+        .message {
+            margin-top: 20px;
+            font-weight: bold;
+            min-height: 24px; /* Prevents jumping layout */
+        }
+        .success { color: #98c379; }
+        .error { color: #e06c75; }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>Guess the Number</h1>
+        <p>I picked a number between 1 and 100.</p>
+        
+        <input type="number" id="userGuess" placeholder="Enter number..." />
+        <br>
+        <button onclick="checkGuess()">Guess</button>
+        
+        <p id="message" class="message"></p>
+        <p>Attempts: <span id="attempts">0</span></p>
+        <button onclick="restartGame()" style="background-color: #e06c75; color: white; margin-top:10px;">Restart</button>
+    </div>
+
+    <script>
+        // 1. Generate Random Number
+        // Math.random() gives 0.0 to 0.99. Multiply by 100 and floor to get integer.
+        let secretNumber = Math.floor(Math.random() * 100) + 1;
+        let attempts = 0;
+
+        // Function linked to the "Guess" button
+        function checkGuess() {
+            // Get the value from the input box
+            const guessInput = document.getElementById('userGuess');
+            const guess = Number(guessInput.value);
+            const messageEl = document.getElementById('message');
+            const attemptsEl = document.getElementById('attempts');
+
+            // Validation
+            if (!guess || guess < 1 || guess > 100) {
+                messageEl.textContent = "Please enter a valid number (1-100).";
+                messageEl.className = "message error";
+                return;
+            }
+
+            attempts++;
+            attemptsEl.textContent = attempts;
+
+            // Logic Check (Same as C/Python)
+            if (guess === secretNumber) {
+                messageEl.textContent = `Correct! The number was ${secretNumber}.`;
+                messageEl.className = "message success";
+                guessInput.disabled = true; // Stop user from guessing more
+            } else if (guess > secretNumber) {
+                messageEl.textContent = "Too High! Try again.";
+                messageEl.className = "message error";
+            } else {
+                messageEl.textContent = "Too Low! Try again.";
+                messageEl.className = "message error";
+            }
+            
+            // Clear input for next guess
+            guessInput.value = '';
+            guessInput.focus();
+        }
+
+        // Function linked to "Restart" button
+        function restartGame() {
+            secretNumber = Math.floor(Math.random() * 100) + 1;
+            attempts = 0;
+            document.getElementById('attempts').textContent = 0;
+            document.getElementById('message').textContent = "";
+            
+            const guessInput = document.getElementById('userGuess');
+            guessInput.disabled = false;
+            guessInput.value = '';
+            guessInput.focus();
+        }
+    </script>
+</body>
+</html>
